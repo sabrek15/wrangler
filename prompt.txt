@@ -1,0 +1,21 @@
+# Technical Implementation Prompts for Wrangler Enhancement
+
+## Grammar & Parser Implementation
+1. "How to implement case-insensitive unit matching (KB/MB/GB) in ANTLR4 lexer rules without causing token ambiguity?"
+2. "Best approach to handle both decimal (1.5MB) and integer (500KB) byte size values in parser rules"
+3. "Proper way to add new token types to existing Wrangler grammar without breaking backward compatibility"
+
+## Core Class Implementation
+4. "Optimal design for ByteSize class to handle both binary (1024) and decimal (1000) base unit conversions"
+5. "Thread-safe implementation strategy for TimeDuration's unit conversion methods"
+6. "How to properly integrate new token types into Wrangler's existing parser visitor pattern"
+
+## Directive Implementation
+7. "Efficient aggregation pattern for mixed units (KB/MB/GB) in input data"
+8. "Best practice for implementing configurable output units (MB/GB) in aggregate directive"
+9. "How to properly use ExecutorContext.Store for multi-phase aggregation"
+
+## Advanced Testing
+10. "Comprehensive test strategy for edge cases in byte size parsing (values near MAX_LONG)"
+11. "How to test precision loss scenarios in time duration unit conversions"
+12. "Proper mocking strategy for Store in directive unit tests"
