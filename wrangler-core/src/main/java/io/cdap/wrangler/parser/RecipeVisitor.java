@@ -20,20 +20,7 @@ import io.cdap.wrangler.api.LazyNumber;
 import io.cdap.wrangler.api.RecipeSymbol;
 import io.cdap.wrangler.api.SourceInfo;
 import io.cdap.wrangler.api.Triplet;
-import io.cdap.wrangler.api.parser.Bool;
-import io.cdap.wrangler.api.parser.BoolList;
-import io.cdap.wrangler.api.parser.ColumnName;
-import io.cdap.wrangler.api.parser.ColumnNameList;
-import io.cdap.wrangler.api.parser.DirectiveName;
-import io.cdap.wrangler.api.parser.Expression;
-import io.cdap.wrangler.api.parser.Identifier;
-import io.cdap.wrangler.api.parser.Numeric;
-import io.cdap.wrangler.api.parser.NumericList;
-import io.cdap.wrangler.api.parser.Properties;
-import io.cdap.wrangler.api.parser.Ranges;
-import io.cdap.wrangler.api.parser.Text;
-import io.cdap.wrangler.api.parser.TextList;
-import io.cdap.wrangler.api.parser.Token;
+import io.cdap.wrangler.api.parser.*;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -314,6 +301,56 @@ public final class RecipeVisitor extends DirectivesBaseVisitor<RecipeSymbol.Buil
       strs.add(text.substring(1, text.length() - 1));
     }
     builder.addToken(new TextList(strs));
+    return builder;
+  }
+
+  @Override
+  public RecipeSymbol.Builder visitByteSize(DirectivesParser.ByteSizeContext ctx) {
+    try {
+      builder.addToken(new ByteSize(ctx.ByteSize().getText()));
+    } catch (IllegalArgumentException e) {
+      // Match existing error handling pattern
+      throw new RuntimeException("Invalid byte size: " + e.getMessage());
+    }
+    return builder;
+  }
+
+  @Override
+  public RecipeSymbol.Builder visitTimeDuration(DirectivesParser.TimeDurationContext ctx) {
+    try {
+      builder.addToken(new TimeDuration(ctx.TimeDuration().getText()));
+    } catch (IllegalArgumentException e) {
+      throw new RuntimeException("Invalid time duration: " + e.getMessage());
+    }
+    return builder;
+  }
+
+  @Override
+  public RecipeSymbol.Builder visitValue(DirectivesParser.ValueContext ctx) {
+    if (ctx.String() != null) {
+      String value = ctx.String().getText();
+      builder.addToken(new Text(value.substring(1, value.length() - 1)));
+    } else if (ctx.Number() != null) {
+      builder.addToken(new Numeric(new LazyNumber(ctx.Number().getText())));
+    } else if (ctx.Column() != null) {
+      builder.addToken(new ColumnName(ctx.Column().getText().substring(1)));
+    } else if (ctx.Bool() != null) {
+      builder.addToken(new Bool(Boolean.valueOf(ctx.Bool().getText())));
+    } else if (ctx.ByteSize() != null) {
+      try {
+        builder.addToken(new ByteSize(ctx.ByteSize().getText()));
+      } catch (IllegalArgumentException e) {
+        throw new RuntimeException("Invalid byte size: " + e.getMessage());
+      }
+    } else if (ctx.TimeDuration() != null) {
+      try {
+        builder.addToken(new TimeDuration(ctx.TimeDuration().getText()));
+      } catch (IllegalArgumentException e) {
+        throw new RuntimeException("Invalid time duration: " + e.getMessage());
+      }
+    } else {
+      throw new RuntimeException("Unknown value type");
+    }
     return builder;
   }
 
