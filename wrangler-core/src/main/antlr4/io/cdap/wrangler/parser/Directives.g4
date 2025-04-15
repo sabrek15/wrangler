@@ -64,6 +64,8 @@ directive
     | stringList
     | numberRanges
     | properties
+    | byteSize
+    | timeDuration
   )*?
   ;
 
@@ -128,7 +130,7 @@ propertyList
  ;
 
 property
- : Identifier '=' ( text | number | bool )
+ : Identifier '=' ( text | number | bool | byteSize | timeDuration )
  ;
 
 numberRanges
@@ -140,7 +142,15 @@ numberRange
  ;
 
 value
- : String | Number | Column | Bool
+ : String | Number | Column | Bool | ByteSize | TimeDuration
+ ;
+
+byteSize
+ : ByteSize
+ ;
+
+timeDuration
+ : TimeDuration
  ;
 
 ecommand
@@ -257,6 +267,14 @@ Number
  : Int ('.' Digit*)?
  ;
 
+ByteSize
+ : Number ByteUnit
+ ;
+
+TimeDuration
+ : Number TimeUnit
+ ;
+
 Identifier
  : [a-zA-Z_\-] [a-zA-Z_0-9\-]*
  ;
@@ -290,6 +308,16 @@ OctalEscape
 fragment
 UnicodeEscape
    :   '\\' 'u' HexDigit HexDigit HexDigit HexDigit
+   ;
+
+fragment
+ByteUnit
+   : ('b'|'B'|'kb'|'KB'|'mb'|'MB'|'gb'|'GB'|'tb'|'TB'|'pb'|'PB')
+   ;
+
+fragment
+TimeUnit
+   : ('ns'|'us'|'ms'|'s'|'m'|'h'|'d')
    ;
 
 fragment
