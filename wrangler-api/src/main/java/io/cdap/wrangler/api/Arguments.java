@@ -42,10 +42,10 @@ public interface Arguments {
    * method is expected to return <code>null</code></p>
    *
    * @param name of the token to be retrieved.
-   * @param <T> type the token need to casted to.
+   * @param <T>  type the token need to casted to.
    * @return object that extends <code>Token</code>.
    */
-  <T extends Token> T value(String name);
+  <T extends Token> Object value(String name);
 
   /**
    * Returns the number of tokens that are mapped to arguments.
